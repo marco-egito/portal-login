@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Acesso Administrativo - EuPsico</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
+        .login-container { text-align: center; background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        button { background-color: #004a7f; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 1.2em; cursor: pointer; transition: background-color 0.2s ease; }
+        button:hover { background-color: #005a87; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="https://i.ibb.co/JwdDSZxZ/Cabe-a-ho.png" alt="Logo EuPsico" style="max-width: 300px; margin-bottom: 20px;">
+        <h2>Acesso ao Painel Administrativo</h2>
+        <p>Por favor, autentique-se com sua conta de administrador.</p>
+        <button id="login-btn">Entrar com Google</button>
+        <p id="status-message" style="color: #555; margin-top: 15px;"></p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCLeWW39nqxsdv1YD-CNa9RSTv05lGHJxM", authDomain: "eupsico-agendamentos-d2048.firebaseapp.com", databaseURL: "https://eupsico-agendamentos-d2048-default-rtdb.firebaseio.com", projectId: "eupsico-agendamentos-d2048", storageBucket: "eupsico-agendamentos-d2048.appspot.com", messagingSenderId: "1041518416343", appId: "1:1041518416343:web:3b972c212c52a59ad7bb92" };
+        firebase.initializeApp(firebaseConfig);
+
+        const loginButton = document.getElementById('login-btn');
+        const statusMessage = document.getElementById('status-message');
+
+        // !!!!! MUITO IMPORTANTE !!!!!
+        // Substitua pela URL REAL do seu painel de ADMINISTRAÇÃO no GitHub Pages
+        const URL_PAINEL_ADMIN = 'https://SEU-USUARIO.github.io/painel-admin/';
+
+        loginButton.addEventListener('click', () => {
+            statusMessage.textContent = 'Aguarde...';
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    const user = result.user;
+                    if (user.email.endsWith('@eupsico.org.br')) {
+                        statusMessage.textContent = 'Login bem-sucedido! Redirecionando...';
+                        window.location.href = URL_PAINEL_ADMIN;
+                    } else {
+                        statusMessage.textContent = 'Acesso negado. Use uma conta @eupsico.org.br.';
+                        firebase.auth().signOut();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro no login:", error);
+                    statusMessage.textContent = "Erro ao conectar: " + error.message;
+                });
+        });
+    </script>
+</body>
+</html>
